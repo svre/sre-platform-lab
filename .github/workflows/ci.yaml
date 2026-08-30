@@ -1,0 +1,25 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download code
+        uses: actions/checkout@v6
+
+      - name: Install Python
+        uses: actions/setup-python@v6
+
+      - name: Install dependencies
+        uses: python -m pip install -r app/requirements-dev.txt
+        with:
+          python-version: "3.13"
+
+      - name: Run tests
+        run: python -m pytest -q
+
