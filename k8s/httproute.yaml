@@ -9,16 +9,9 @@ spec:
       kind: Gateway
       name: traefik-gateway
       namespace: traefik
-      sectionName: web
-    - group: gateway.networking.k8s.io
-      kind: Gateway
-      name: traefik-gateway
-      namespace: traefik
       sectionName: websecure
-
   hostnames:
     - sre.localhost
-
   rules:
     - matches:
         - path:
@@ -30,3 +23,25 @@ spec:
           name: sre-demo
           port: 80
           weight: 1
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: sre-demo-http-redirect
+  namespace: sre-lab
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: traefik-gateway
+      namespace: traefik
+      sectionName: web
+  hostnames:
+    - sre.localhost
+  rules:
+    - filters:
+        - type: RequestRedirect
+          requestRedirect:
+            scheme: https
+            port: 8443
+            statusCode: 308
