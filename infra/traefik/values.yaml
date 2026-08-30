@@ -1,0 +1,51 @@
+deployment:
+  kind: Deployment
+  replicas: 1
+
+nodeSelector:
+  ingress-ready: "true"
+
+service:
+  spec:
+    type: ClusterIP
+
+ports:
+  web:
+    hostPort: 80
+  websecure:
+    hostPort: 443
+
+providers:
+  kubernetesCRD:
+    enabled: false
+  kubernetesIngress:
+    enabled: false
+  kubernetesGateway:
+    enabled: true
+
+ingressClass:
+  enabled: false
+
+gatewayClass:
+  enabled: true
+  name: traefik
+
+gateway:
+  enabled: true
+  name: traefik-gateway
+  listeners:
+    web:
+      port: 8000
+      protocol: HTTP
+      namespacePolicy:
+        from: All
+
+accessLog:
+  enabled: true
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    memory: 256Mi
