@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: sre-demo
-          image: sre-demo:v2
+          image: sre-demo:v1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
