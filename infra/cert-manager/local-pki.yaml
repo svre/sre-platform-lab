@@ -1,0 +1,59 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: selfsigned-bootstrap
+  namespace: traefik
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sre-lab-root-ca
+  namespace: traefik
+spec:
+  isCA: true
+  commonName: sre-lab-root-ca
+  secretName: sre-lab-root-ca
+  duration: 87600h
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Never
+  usages:
+    - cert sign
+    - crl sign
+  issuerRef:
+    name: selfsigned-bootstrap
+    kind: Issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: sre-lab-ca
+  namespace: traefik
+spec:
+  ca:
+    secretName: sre-lab-root-ca
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sre-localhost
+  namespace: traefik
+spec:
+  secretName: sre-localhost-tls
+  duration: 2160h
+  renewBefore: 360h
+  dnsNames:
+    - sre.localhost
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+    rotationPolicy: Always
+  usages:
+    - digital signature
+    - server auth
+  issuerRef:
+    name: sre-lab-ca
+    kind: Issuer

@@ -32,13 +32,24 @@ gatewayClass:
 
 gateway:
   enabled: true
-  name: traefik-gateway
   listeners:
     web:
       port: 8000
       protocol: HTTP
       namespacePolicy:
         from: All
+
+    websecure:
+      port: 8443
+      hostname: sre.localhost
+      protocol: HTTPS
+      namespacePolicy:
+        from: All
+      mode: Terminate
+      certificateRefs:
+        - group: ""
+          kind: Secret
+          name: sre-localhost-tls
 
 accessLog:
   enabled: true
