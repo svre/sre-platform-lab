@@ -1,3 +1,4 @@
+import os
 import socket
 
 from fastapi import FastAPI
@@ -9,9 +10,8 @@ app = FastAPI()
 def root():
     return {
         "service": "sre-demo",
-        "version": "v2",
+        "version": os.getenv("APP_VERSION", "dev"),
         "pod": socket.gethostname(),
-        "message": "rolling update complete"
     }
 
 
